@@ -25,6 +25,15 @@ class ProfileCardPainter(
 
         val avatarBounds = RectFFactory.fromCircle(center = centerAvatar, radius = avatarRadius).inflate(avatarMargin)
 
+        val curvedShapeBounds = RectFFactory.fromLTRB(
+            shapeBounds.left,
+            shapeBounds.top + shapeBounds.height() * 0.35f,
+            shapeBounds.right,
+            shapeBounds.bottom
+        )
+//2
+        drawCurvedShape(canvas, curvedShapeBounds, avatarBounds)
+
 
     }
 
@@ -58,7 +67,8 @@ class ProfileCardPainter(
     private fun drawCurvedShape(canvas: Canvas, bounds: RectF, avatarBounds: RectF) {
         //1
         val paint = Paint()
-        paint.color = color.darkerShade()
+        paint.shader = createGradient(bounds)
+
 
         //2
         val handlePoint = PointF(bounds.left + (bounds.width() * 0.25f), bounds.top)
@@ -85,6 +95,20 @@ class ProfileCardPainter(
         canvas.drawPath(curvePath, paint)
     }
 
+    private fun createGradient(bounds: RectF): LinearGradient {
+        //1
+        val colors = intArrayOf(color.darkerShade(), color, color.darkerShade())
+        //2
+        val stops = floatArrayOf(0.0f, 0.3f, 1.0f)
+        //3
+        return LinearGradient(
+            bounds.centerLeft.x, bounds.centerLeft.y,
+            bounds.centerRight.x, bounds.centerRight.y,
+            colors,
+            stops,
+            Shader.TileMode.REPEAT
+        )
+    }
 
 
 }
